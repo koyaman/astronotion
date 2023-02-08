@@ -1,0 +1,21 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header title={SITE_TITLE} />
+		<main>
+			<h1>🧑‍🚀 Astronotion 📚</h1>
+			<p>Astronotionは、宇宙旅行を安全かつスムーズに楽しむことを可能にする究極のツールです。宇宙旅行者が宇宙を探検し、新しい文明を発見し、宇宙の神秘を体験できるように、様々な機能を提供しています。Astronotionは、未知の星に行く前に、宇宙の地図を提供し、宇宙の探検を可能にします。その上で、宇宙旅行者が持つ情報を整理し、宇宙旅行をより安全に行えるように支援を行います。Astronotionは、冒険者の夢に叶うために、空想を実現するのに必要なツールを提供し、宇宙旅行者が未知の場所への旅行をより安全かつスムーズに行うことを可能にします。宇宙旅行者が、宇宙の探検を楽しんで安全に行えるよう、Astronotionは努力を重ねています。			</p>
+		</main>
+		<Footer />
+	</body>
+</html>
