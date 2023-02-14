@@ -5,6 +5,7 @@ const Credentials = {
 
 
 const errorHandler = async ({ next }) => {
+  console.log("errorHandler");
   try {
     return await next();
   } catch (err) {
@@ -14,6 +15,7 @@ const errorHandler = async ({ next }) => {
 
 
 const guardByBasicAuth = async ({ next, request, }) => {
+  console.log("guardByBasicAuth");
   // Check header
   if (!request.headers.has("Authorization")) {
     return new Response(
