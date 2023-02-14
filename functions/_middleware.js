@@ -13,7 +13,7 @@ const errorHandler = async ({ next }) => {
 };
 
 
-const guardByBasicAuth = async ({ next, request, }) => {
+const guardByBasicAuth = async ({ next, request, env }) => {
   // Check header
   if (!request.headers.has("Authorization")) {
     return new Response(
@@ -48,8 +48,8 @@ const guardByBasicAuth = async ({ next, request, }) => {
     );
   }
   const creds = {
-    username: request.env.BASIC_USERNAME || Credentials.USERNAME,
-    password: request.env.BASIC_PASSWORD || Credentials.PASSWORD,
+    username: env.BASIC_USERNAME || Credentials.USERNAME,
+    password: env.BASIC_PASSWORD || Credentials.PASSWORD,
   };
   // Verify credentials
   const username = decoded.substring(0, index);
