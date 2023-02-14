@@ -4,12 +4,13 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import { getCollection } from 'astro:content';
+import { getNotion } from "../../library/notion";
+
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
 );
 ---
-
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
@@ -22,7 +23,8 @@ const posts = (await getCollection('blog')).sort(
 			ul li {
 				display: flex;
 			}
-			ul li time {
+			ul li time,
+			ul li span {
 				flex: 0 0 130px;
 				font-style: italic;
 				color: #595959;
@@ -36,6 +38,16 @@ const posts = (await getCollection('blog')).sort(
 		<Header />
 		<main>
 			<section>
+				<ul>
+					{
+						getNotion.results.map((content: any) => (
+							<li>
+								<span>{content.properties.date.date.start}</span>
+								<a href={`/blog/${content.id}/`}>{content.properties.title.title[0].plain_text}</a>
+							</li>
+						))
+					}
+				</ul>
 				<ul>
 					{
 						posts.map((post) => (
