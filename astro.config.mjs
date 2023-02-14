@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 
 export default defineConfig({
-	site: 'https://koyaman.github.io',
-	base: '/astronotion',
+	// site: 'https://koyaman.github.io',
+	// base: '',
 	integrations: [mdx(), sitemap()],
 });
