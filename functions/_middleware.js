@@ -1,9 +1,3 @@
-const Credentials = {
-  USERNAME: "user",
-  PASSWORD: "password",
-};
-
-
 const errorHandler = async ({ next }) => {
   try {
     return await next();
@@ -47,14 +41,14 @@ const guardByBasicAuth = async ({ next, request, env }) => {
       }
     );
   }
-  const creds = {
-    username: env.BASIC_USERNAME || Credentials.USERNAME,
-    password: env.BASIC_PASSWORD || Credentials.PASSWORD,
+  const credentials = {
+    username: env.BASIC_USERNAME,
+    password: env.BASIC_PASSWORD,
   };
   // Verify credentials
   const username = decoded.substring(0, index);
   const password = decoded.substring(index + 1);
-  if (username !== creds.username || password !== creds.password) {
+  if (username !== credentials.username || password !== credentials.password) {
     return new Response(
       "Invalid username or password.",
       {
