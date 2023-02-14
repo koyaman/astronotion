@@ -5,7 +5,6 @@ const Credentials = {
 
 
 const errorHandler = async ({ next }) => {
-  console.log("errorHandler");
   try {
     return await next();
   } catch (err) {
@@ -15,7 +14,6 @@ const errorHandler = async ({ next }) => {
 
 
 const guardByBasicAuth = async ({ next, request, }) => {
-  console.log("guardByBasicAuth");
   // Check header
   if (!request.headers.has("Authorization")) {
     return new Response(
@@ -50,8 +48,8 @@ const guardByBasicAuth = async ({ next, request, }) => {
     );
   }
   const creds = {
-    username: env.BASIC_USERNAME || Credentials.USERNAME,
-    password: env.BASIC_PASSWORD || Credentials.PASSWORD,
+    username: context.env.BASIC_USERNAME || Credentials.USERNAME,
+    password: context.env.BASIC_PASSWORD || Credentials.PASSWORD,
   };
   // Verify credentials
   const username = decoded.substring(0, index);
