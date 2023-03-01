@@ -1,21 +1,57 @@
 ---
-import { CollectionEntry, getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import { notion, getNotion } from "../../library/notion";
 
+// ページの全IDを取得
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
-		params: { slug: post.slug },
-		props: post,
-	}));
+  const response = await getNotion.results;
+  return response.map((content: any) => ({
+    params: {
+      slug: content.id
+    },
+  }));
 }
-type Props = CollectionEntry<'blog'>;
-
-const post = Astro.props;
-const { Content } = await post.render();
+const { slug } = Astro.params;
+const pageProps = await notion.pages.retrieve({ page_id: slug });
+const pageContents = await notion.blocks.children.list({ block_id: slug });
 ---
 
-<BlogPost {...post.data}>
-	<h1>{post.data.title}</h1>
-	<Content />
+<BlogPost>
+	<h1 class="title">{pageProps.properties.title.title[0].plain_text}</h1>
+	<div>
+		Last updated on <time>{pageProps.properties.date.date.start}</time>
+	</div>
+	<hr>
+	{
+		pageContents.results.map((content: any) => {
+			switch (content.type) {
+				case 'heading_1':
+					return <h1>{content.heading_1.rich_text[0].plain_text}</h1>;
+				case 'heading_2':
+					return <h2>{content.heading_2.rich_text[0].plain_text}</h2>;
+				case 'heading_3':
+					return <h3>{content.heading_3.rich_text[0].plain_text}</h3>;
+				case 'paragraph':
+					if(content.paragraph.rich_text[0]) {
+						return <p>{content.paragraph.rich_text[0].plain_text}</p>;
+					} else {
+						return;
+					}
+				case 'bulleted_list_item':
+					return <li>{content.bulleted_list_item.rich_text[0].plain_text}</li>;
+				default:
+					return null;
+			}
+		})
+	}
 </BlogPost>
+<style>
+	.title {
+		font-size: 2em;
+		margin: 0.25em 0 0;
+	}
+	hr {
+		border-top: 1px solid #ddd;
+		margin: 1rem 0;
+	}
+</style>
