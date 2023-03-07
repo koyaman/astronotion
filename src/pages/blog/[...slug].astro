@@ -32,6 +32,7 @@ const pageContents = await notion.blocks.children.list({ block_id: slug });
 				case 'heading_3':
 					return <h3>{content.heading_3.rich_text[0].plain_text}</h3>;
 				case 'paragraph':
+					console.log(content.paragraph);
 					if(content.paragraph.rich_text[0]) {
 						return <p>{content.paragraph.rich_text[0].plain_text}</p>;
 					} else {
