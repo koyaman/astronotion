@@ -1,6 +1,8 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
 import { notion, getNotion } from "../../library/notion";
+import { marked } from "marked";
+
 
 // ページの全IDを取得
 export async function getStaticPaths() {
@@ -13,7 +15,18 @@ export async function getStaticPaths() {
 }
 const { slug } = Astro.params;
 const pageProps = await notion.pages.retrieve({ page_id: slug });
-const pageContents = await notion.blocks.children.list({ block_id: slug });
+
+// ---
+import {NotionToMarkdown} from "notion-to-md";
+// passing notion client to the option
+const n2m = new NotionToMarkdown({ notionClient: notion });
+const md2html = (async () => {
+  // get all blocks in the page
+	const mdblocks = await n2m.pageToMarkdown(slug);
+	const mdString = n2m.toMarkdownString(mdblocks);
+	return marked(mdString);
+})();
+
 ---
 
 <BlogPost>
@@ -22,29 +35,7 @@ const pageContents = await notion.blocks.children.list({ block_id: slug });
 		Last updated on <time>{pageProps.properties.date.date.start}</time>
 	</div>
 	<hr>
-	{
-		pageContents.results.map((content: any) => {
-			switch (content.type) {
-				case 'heading_1':
-					return <h1>{content.heading_1.rich_text[0].plain_text}</h1>;
-				case 'heading_2':
-					return <h2>{content.heading_2.rich_text[0].plain_text}</h2>;
-				case 'heading_3':
-					return <h3>{content.heading_3.rich_text[0].plain_text}</h3>;
-				case 'paragraph':
-					console.log(content.paragraph);
-					if(content.paragraph.rich_text[0]) {
-						return <p>{content.paragraph.rich_text[0].plain_text}</p>;
-					} else {
-						return;
-					}
-				case 'bulleted_list_item':
-					return <li>{content.bulleted_list_item.rich_text[0].plain_text}</li>;
-				default:
-					return null;
-			}
-		})
-	}
+	<div set:html={md2html}></div>
 </BlogPost>
 <style>
 	.title {
